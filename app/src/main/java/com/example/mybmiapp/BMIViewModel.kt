@@ -1,0 +1,26 @@
+package com.example.mybmiapp
+
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
+
+class BMIViewModel: ViewModel() {
+    private val _repository: BMIRepository = BMIRepository()
+
+    private val _bmiValue = mutableStateOf(_repository.getBmiResults().bmiValue)
+    private val _obsessiveLevel = mutableStateOf(_repository.getBmiResults().obsessiveLevel)
+    private val _obsessiveEmoji = mutableStateOf(_repository.getBmiResults().obsessiveEmoji)
+
+    val bmiValue: MutableState<Double> = _bmiValue
+    val obsessiveLevel: MutableState<String> = _obsessiveLevel
+    val obsessiveEmoji : MutableState<String> = _obsessiveEmoji
+
+    fun setBmiValue(height: Double, weight: Double) {
+        _repository.setBMIResult(height, weight)
+        _bmiValue.value = _repository.getBmiResults().bmiValue
+        _obsessiveLevel.value = _repository.getBmiResults().obsessiveLevel
+        _obsessiveEmoji.value = _repository.getBmiResults().obsessiveEmoji
+    }
+
+
+}

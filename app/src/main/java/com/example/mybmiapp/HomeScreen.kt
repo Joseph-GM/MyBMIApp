@@ -24,12 +24,9 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(viewModel: BMIViewModel){
     var heightString by remember{ mutableStateOf("")}
     var weightString by remember { mutableStateOf("") }
-    var bmiValue by remember { mutableStateOf("") }
-    var obesityLevel by remember { mutableStateOf("") }
-    var faceStatus by remember { mutableStateOf("😃") }
 
 
     // Keyboard 숨기는 것을 구현하기 위해 LocalFocusManager 인스턴스를 가져옵니다.
@@ -47,7 +44,7 @@ fun HomeScreen(){
         horizontalAlignment = Alignment.CenterHorizontally) {
 
         Text(text = "BMI Calculator", style = customTextStyle)
-        Text(text = "Your Level : $obesityLevel")
+        Text(text = "Your Level : ${viewModel.obsessiveLevel.value}")
         OutlinedTextField(value = heightString, 
             onValueChange = {
                 heightString = it
@@ -63,48 +60,20 @@ fun HomeScreen(){
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         Button(onClick = {
-            bmiValue = bmiCalculator(heightString,weightString)
-            obesityLevel = calculateObesityLevel(bmiValue.toDouble())
-            faceStatus = outFaceStatus(obesityLevel)
+            val inputHeightDouble = heightString.toDoubleOrNull() ?: 1.5
+            val inputWeightDouble = weightString.toDoubleOrNull() ?: 60.0
+            viewModel.setBmiValue(inputHeightDouble, inputWeightDouble)
             // 키보드를 사라지게 하기
             focusManager.clearFocus()
         }) {
             Text(text = "Calculation")
         }
-        Text(text = "Your BMI : $bmiValue", style = TextStyle(fontSize = 30.sp))
-        Text(text = faceStatus, style = TextStyle(fontSize = 150.sp))
+        Text(text = "Your BMI : ${String.format("%.1f", viewModel.bmiValue.value)}", style = TextStyle(fontSize = 30.sp))
+        Text(text = "${viewModel.obsessiveEmoji.value}", style = TextStyle(fontSize = 150.sp))
 
         
     }
 
 }
 
-fun bmiCalculator(height: String, weight: String): String {
-    var myBmi : Double
-    myBmi = weight.toDouble() / (height.toDouble() * height.toDouble() )
-    return String.format("%.1f", myBmi)
-}
-
-fun calculateObesityLevel(bmi: Double): String {
-    return when {
-        bmi < 18.5 -> "Underweight"
-        bmi < 25 -> "Normal weight"
-        bmi < 30 -> "Overweight"
-        bmi < 35 -> "Obesity Class 1"
-        bmi < 40 -> "Obesity Class 2"
-        else -> "Severe Obesity Class 3"
-    }
-}
-
-fun outFaceStatus(obesityString: String): String {
-     return when {
-        obesityString ==  "Underweight" -> "😂"
-        obesityString == "Normal weight" -> "😄"
-        obesityString == "Overweight" -> "🤪"
-        obesityString == "Obesity Class 1" -> "😓"
-        obesityString == "Obesity Class 2" -> "😭"
-        obesityString == "Severe Obesity Class 3" -> "😱"
-        else -> ""
-    }
-}
 
