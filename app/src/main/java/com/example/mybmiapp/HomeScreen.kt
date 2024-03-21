@@ -25,9 +25,6 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun HomeScreen(viewModel: BMIViewModel){
-    var heightString by remember{ mutableStateOf("")}
-    var weightString by remember { mutableStateOf("") }
-
 
     // Keyboard 숨기는 것을 구현하기 위해 LocalFocusManager 인스턴스를 가져옵니다.
     val focusManager = LocalFocusManager.current
@@ -45,23 +42,23 @@ fun HomeScreen(viewModel: BMIViewModel){
 
         Text(text = "BMI Calculator", style = customTextStyle)
         Text(text = "Your Level : ${viewModel.obsessiveLevel.value}")
-        OutlinedTextField(value = heightString, 
+        OutlinedTextField(value = viewModel.heightString,
             onValueChange = {
-                heightString = it
-                Log.d("joseph", "Height input : $heightString")},
+                viewModel.onHeightChanged(it)
+                Log.d("joseph", "Height input : ${viewModel.heightString}")},
             label = { Text(text = "Height(m)")},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
-        OutlinedTextField(value = weightString,
+        OutlinedTextField(value = viewModel.weightString,
             onValueChange = {
-                weightString = it
-                Log.d("joseph", "Weight input : $weightString")},
+                viewModel.onWeightChanged(it)
+                Log.d("joseph", "Weight input : ${viewModel.weightString}")},
             label = { Text(text = "Weight(kg)")},
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
         Button(onClick = {
-            val inputHeightDouble = heightString.toDoubleOrNull() ?: 1.5
-            val inputWeightDouble = weightString.toDoubleOrNull() ?: 60.0
+            val inputHeightDouble = viewModel.heightString.toDoubleOrNull() ?: 1.5
+            val inputWeightDouble = viewModel.weightString.toDoubleOrNull() ?: 60.0
             viewModel.setBmiValue(inputHeightDouble, inputWeightDouble)
             // 키보드를 사라지게 하기
             focusManager.clearFocus()
