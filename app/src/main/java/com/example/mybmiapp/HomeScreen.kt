@@ -66,7 +66,7 @@ fun HomeScreen(viewModel: BMIViewModel){
             Text(text = "Calculation")
         }
         Text(text = "Your BMI : ${String.format("%.1f", viewModel.bmiValue.value)}", style = TextStyle(fontSize = 30.sp))
-        Text(text = "${viewModel.obsessiveEmoji.value}", style = TextStyle(fontSize = 150.sp))
+        Text(text = viewModel.obsessiveEmoji.value, style = TextStyle(fontSize = 150.sp))
 
         
     }
